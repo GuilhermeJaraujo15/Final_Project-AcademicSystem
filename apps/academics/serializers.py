@@ -28,8 +28,7 @@ class TermSerializer(serializers.ModelSerializer):
         return attrs
 
 class ClassGroupSerializer(serializers.ModelSerializer):
-    subject_name = serializers.CharField(source="subject.name", read_only=True)
-    class Meta: model = ClassGroup; fields = ["id", "code", "subject", "subject_name", "term"]
+    class Meta: model = ClassGroup; fields = ["id", "code", "term", "capacity"]
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     class Meta: model = Enrollment; fields = "__all__"
@@ -41,12 +40,15 @@ class AssessmentSerializer(serializers.ModelSerializer):
         return value
 
 class GradeSerializer(serializers.ModelSerializer):
-    class Meta: model = Grade; fields = "__all__"
+    class Meta:
+        model = Grade
+        fields = "__all__"
+        read_only_fields = ["recorded_by"]
     def validate(self, attrs):
         assessment = attrs.get("assessment", getattr(self.instance, "assessment", None))
         enrollment = attrs.get("enrollment", getattr(self.instance, "enrollment", None))
         score = attrs.get("score", getattr(self.instance, "score", None))
-        if assessment and enrollment and assessment.class_group_id != enrollment.class_group_id:
+        if assessment and enrollment and assessment.class_group and assessment.class_group.pk != enrollment.class_group_id:
             raise serializers.ValidationError("Nota e matricula devem pertencer na mesma turma.")
         if score is not None and (score < 0 or assessment and score > assessment.max_score):
             raise serializers.ValidationError("Nota fora da escala permitida.")
@@ -54,12 +56,17 @@ class GradeSerializer(serializers.ModelSerializer):
 
 class AttendanceSerializer(serializers.ModelSerializer):
     recorded_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    class Meta: model = Attendance; fields = "__all__"
+    class Meta:
+        model = Attendance
+        fields = "__all__"
+        read_only_fields = ["held_on", "present"]
     def validate(self, attrs):
         enrollment = attrs.get("enrollment", getattr(self.instance, "enrollment", None))
-        held_on = attrs.get("held_on", getattr(self.instance, "held_on", None))
         if enrollment and not enrollment.active: raise serializers.ValidationError("A matricula nao esta ativa.")
+        session = attrs.get("session", getattr(self.instance, "session", None))
+        if session and enrollment and session.assignment_id and session.assignment.class_group_id != enrollment.class_group_id:
+            raise serializers.ValidationError("A chamada e a matricula devem pertencer na mesma turma.")
         return attrs
 
 class NotificationSerializer(serializers.ModelSerializer):
-    class Meta: model = Notification; fields = ["id", "category", "message", "created_at", "read_at"]
+    class Meta: model = Notification; fields = ["id", "category", "title", "message", "created_at", "read_at", "target_path"]

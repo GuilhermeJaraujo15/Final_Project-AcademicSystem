@@ -3,7 +3,7 @@ from django.db.models import Avg, Count
 from apps.academics.models import Grade
 
 def class_grade_summary(class_group):
-    return Grade.objects.filter(assessment__class_group=class_group).aggregate(mean=Avg("score"), graded=Count("id"))
+    return Grade.objects.filter(assessment__assignment__class_group=class_group, released_at__isnull=False).aggregate(mean=Avg("score"), graded=Count("id"))
 
 def predict_dropout_risk(enrollment):
     raise NotImplementedError("PrevisÇes ficam desabilitadas até existir modelo treinado e validado.")

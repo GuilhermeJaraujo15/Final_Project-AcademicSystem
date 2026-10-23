@@ -17,3 +17,11 @@ class PreviewRoutesTests(SimpleTestCase):
         response = self.client.get("/?role=superuser")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Ana Martins")
+
+    def test_institutional_configuration_page_shows_only_academic_profiles(self):
+        response = self.client.get("/administracao/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Coordenador")
+        self.assertContains(response, "Professor")
+        self.assertContains(response, "Aluno")
+        self.assertNotContains(response, "Administrador")
