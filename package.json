@@ -1,0 +1,12 @@
+{
+  "name": "academic-ui",
+  "private": true,
+  "scripts": {
+    "css:build": "tailwindcss -i ./static/src/input.css -o ./static/css/app.css --minify",
+    "css:watch": "tailwindcss -i ./static/src/input.css -o ./static/css/app.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.18",
+    "@tailwindcss/cli": "^4.1.18"
+  }
+}

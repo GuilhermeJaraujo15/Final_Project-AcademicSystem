@@ -1,0 +1,2 @@
+[tool.dj-database-url]
+# Django settings parse DATABASE_URL. Tailwind is compiled via the npm script.

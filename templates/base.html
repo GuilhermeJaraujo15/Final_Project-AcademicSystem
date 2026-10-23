@@ -1,0 +1,45 @@
+{% load static %}<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#173b70"><title>{% block title %}{{ page_title|default:"Visão geral" }}{% endblock %} - PortAcademy</title><link rel="stylesheet" href="{% static 'css/app.css' %}"></head>
+<body class="min-h-screen bg-slate-100 text-slate-800 antialiased">
+<a class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:bg-white focus:p-3" href="#main-content">Pular para o conteúdo</a>
+<header class="sticky top-0 z-30 border-b border-blue-200 bg-gradient-to-r from-white via-blue-50 to-slate-50 shadow-sm">
+ <div class="mx-auto flex max-w-[1440px] items-center justify-between gap-3 px-4 py-3 sm:px-6">
+  <div class="flex items-center gap-3"><button id="mobile-menu-button" class="rounded-md border border-slate-300 bg-white p-2 text-slate-700 shadow-sm md:hidden" aria-label="Abrir navegação" aria-expanded="false"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><a class="flex items-center gap-3" href="{% if demo_mode %}{% url 'preview:dashboard' %}{% else %}/{% endif %}"><span class="flex h-10 w-10 items-center justify-center rounded-md border border-blue-200 bg-gradient-to-b from-white to-blue-100 text-sm font-black text-blue-900 shadow-sm">PA</span><span><span class="block text-[15px] font-bold tracking-tight text-blue-950">PortAcademy</span></span><span class="hidden text-[11px] text-slate-500 sm:block">Portal de gestão institucional</span></span></a></div>
+  <div class="flex items-center gap-2 sm:gap-4">
+   {% if demo_mode %}<span class="hidden rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-amber-800 sm:inline-flex">Preview - dados fictícios</span><label class="sr-only" for="demo-role">Visualizar interface como</label><select id="demo-role" class="w-[102px] min-w-0 truncate rounded-md border border-slate-300 bg-white px-1 py-2 text-[10px] text-slate-700 sm:w-auto sm:px-2 sm:text-sm" aria-label="Trocar perfil de demonstração"><option value="coordinator" {% if demo_role == 'coordinator' %}selected{% endif %}>Coordenador</option><option value="student" {% if demo_role == 'student' %}selected{% endif %}>Aluno</option><option value="teacher" {% if demo_role == 'teacher' %}selected{% endif %}>Professor</option><option value="admin" {% if demo_role == 'admin' %}selected{% endif %}>Administrador</option></select><div class="hidden items-center gap-2 border-l border-slate-200 pl-3 sm:flex"><span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-900">{{ demo_name|slice:":1" }}</span><span class="text-right"><span class="block text-xs font-semibold text-slate-800">{{ demo_name }}</span><span class="block text-[11px] text-slate-500">{{ demo_role_label }} - demonstração</span></span></div>{% else %}<a href="{% url 'login' %}" class="text-sm font-semibold text-blue-800">Entrar</a>{% endif %}
+  </div>
+ </div>
+</header>
+<div class="mx-auto flex max-w-[1440px] items-start gap-5 px-3 py-5 sm:px-6">
+ <aside id="sidebar" class="fixed inset-y-[65px] left-0 z-20 hidden w-72 overflow-y-auto border-r border-slate-200 bg-slate-50 p-3 shadow-lg md:sticky md:top-[80px] md:block md:w-56 md:shrink-0 md:rounded-lg md:border md:bg-white md:shadow-sm lg:w-60">
+  <div class="mb-4 rounded-md border border-blue-100 bg-gradient-to-b from-blue-50 to-white px-3 py-3"><p class="text-[10px] font-bold uppercase tracking-[.15em] text-blue-700">Ambiente acadêmico</p><p class="mt-1 text-sm font-semibold text-blue-950">Navegação principal</p></div>
+  {% if demo_mode %}
+  <nav aria-label="Navegação principal" class="space-y-1">
+   {% include 'components/nav_link.html' with name='preview:dashboard' key='dashboard' label='Visão geral' icon='grid' %}
+   <p class="px-3 pb-1 pt-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Acadêmico</p>
+   {% include 'components/nav_link.html' with name='preview:students' key='students' label='Alunos' icon='users' %}
+   {% include 'components/nav_link.html' with name='preview:teachers' key='teachers' label='Professores' icon='user' %}
+   {% include 'components/nav_link.html' with name='preview:classes' key='classes' label='Turmas e disciplinas' icon='book' %}
+   {% include 'components/nav_link.html' with name='preview:grades' key='grades' label='Notas e avaliações' icon='chart' %}
+   {% include 'components/nav_link.html' with name='preview:attendance' key='attendance' label='Frequência' icon='check' %}
+   <p class="px-3 pb-1 pt-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Gestão</p>
+   {% include 'components/nav_link.html' with name='preview:monitoring' key='monitoring' label='Acompanhamento' icon='bell' %}
+   {% include 'components/nav_link.html' with name='preview:reports' key='reports' label='Relatórios' icon='document' %}
+   {% include 'components/nav_link.html' with name='preview:administration' key='administration' label='Administração' icon='settings' %}
+  </nav>
+  {% else %}
+  <nav aria-label="Navegação principal" class="space-y-1">
+   <a href="/" class="block rounded-md border-l-2 border-blue-700 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-950">Visão geral</a>
+   <p class="px-3 pb-1 pt-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Acadêmico</p>
+   <a href="/api/v1/students/" class="block rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-blue-50">Alunos</a><a href="/api/v1/teachers/" class="block rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-blue-50">Professores</a><a href="/api/v1/classes/" class="block rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-blue-50">Turmas e disciplinas</a><a href="/api/v1/grades/" class="block rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-blue-50">Notas e avaliações</a><a href="/api/v1/attendance/" class="block rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-blue-50">Frequência</a>
+   {% if user.is_staff %}<a href="/admin/" class="block rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-blue-50">Administração</a>{% endif %}
+  </nav>
+  {% endif %}
+  <div class="mt-6 border-t border-slate-100 px-3 pt-4"><p class="text-[11px] leading-relaxed text-slate-500">As informações deste ambiente são ilustrativas e não representam dados institucionais.</p></div>
+ </aside>
+ <main id="main-content" class="min-w-0 flex-1 pb-24 md:pb-10">{% if demo_mode %}<div class="mb-4 flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-950 sm:hidden"><span class="mt-0.5 font-black">DEMO</span><span>Visualização demonstrativa. Todos os dados são fictícios e nenhuma alteração - salva.</span></div>{% endif %}{% block content %}{% endblock %}</main>
+</div>
+<div id="toast" class="pointer-events-none fixed bottom-5 right-5 z-50 hidden max-w-sm rounded-md border border-blue-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 shadow-lg" role="status" aria-live="polite"></div>
+{% if demo_mode %}<nav class="fixed inset-x-3 bottom-3 z-20 flex items-center justify-around rounded-xl border border-blue-200 bg-white/95 px-2 py-2 shadow-lg backdrop-blur-sm md:hidden" aria-label="Atalhos rápidos"><a class="rounded-lg px-3 py-2 text-xs font-semibold text-blue-900 hover:bg-blue-50" href="{% url 'preview:dashboard' %}">Início</a><a class="rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-50" href="{% url 'preview:students' %}">Alunos</a><a class="rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-50" href="{% url 'preview:classes' %}">Turmas</a><a class="rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-50" href="{% url 'preview:monitoring' %}">Alertas</a></nav>{% endif %}
+<footer class="border-t border-slate-200 bg-white py-4 text-center text-[11px] text-slate-500">PortAcademy - Preview de interface - Dados fictícios</footer>
+<script src="{% static 'js/demo.js' %}" defer></script></body></html>

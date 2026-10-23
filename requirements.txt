@@ -1,0 +1,12 @@
+Django==5.2.8
+djangorestframework==3.16.1
+drf-spectacular==0.28.0
+django-filter==25.2
+dj-database-url==3.0.1
+psycopg[binary]==3.2.12
+celery[redis]==5.5.3
+pandas==2.3.3
+matplotlib==3.10.7
+scikit-learn==1.7.2
+reportlab==4.4.4
+openpyxl==3.1.5
